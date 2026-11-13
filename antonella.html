@@ -66,19 +66,20 @@ body.fs-mode .exit-fs{display:block}
 
 <script>
 // ============================================================
-// 🎵 PLAYLIST DEFINITIVA DE ANTONELLA (10 años)
+// 🎵 PLAYLIST DEFINITIVA DE ANTONELLA (10 años) - CORREGIDA
 // ============================================================
 const playlist = [
-  {id:"qBN7eyI2CFU", title:"Mix Pocoyó", artist:"Corazón Serrano", pauseAfter:false},
-  {id:"6mQRRiz_7xQ", title:"Y Que Pasó", artist:"Orquesta La Bella Luz", pauseAfter:false},
-  {id:"wWDs2hBXcco", title:"Acróstico", artist:"Shakira", pauseAfter:false},
-  {search:"WARMISITAY Milena Warthon video oficial", title:"Warmisitay", artist:"Milena Warthon", pauseAfter:false},
-  {id:"AfJm4CtlcWA", title:"Six Seven", artist:"Laurinha Costa", pauseAfter:false},
-  {id:"2BabCBQysrU", title:"Ojos Marrones 👁️", artist:"Lasso", pauseAfter:false},
-  {search:"Pedazo de Luna León Zárate", title:"Pedazo de Luna", artist:"León Zárate", pauseAfter:false},
-  {id:"IKmPci5VXz0", title:"Hasta la Raíz", artist:"Natalia Lafourcade", pauseAfter:false},
-  {search:"Bonito, Bonito Thiago Navarro Music cafecito", title:"Bonito, Bonito ☕", artist:"Thiago Navarro Music", pauseAfter:true}, // ⏸️ PAUSA para traer el pastel
-  {id:"3k53XKibh5c", title:"🎂 ¡Feliz Cumpleaños Antonella! 🎂", artist:"¡Todos juntos!", pauseAfter:false, isBirthday:true}
+  // ✅ CORREGIDO: Ahora busca automáticamente el video oficial de Corazón Serrano
+  {search: "Mix Pocoyó Corazón Serrano video oficial", title: "Mix Pocoyó", artist: "Corazón Serrano", pauseAfter: false},
+  {id: "6mQRRiz_7xQ", title: "Y Que Pasó", artist: "Orquesta La Bella Luz", pauseAfter: false},
+  {id: "wWDs2hBXcco", title: "Acróstico", artist: "Shakira", pauseAfter: false},
+  {search: "WARMISITAY Milena Warthon video oficial", title: "Warmisitay", artist: "Milena Warthon", pauseAfter: false},
+  {id: "AfJm4CtlcWA", title: "Six Seven", artist: "Laurinha Costa", pauseAfter: false},
+  {id: "2BabCBQysrU", title: "Ojos Marrones 👁️", artist: "Lasso", pauseAfter: false},
+  {search: "Pedazo de Luna León Zárate", title: "Pedazo de Luna", artist: "León Zárate", pauseAfter: false},
+  {id: "IKmPci5VXz0", title: "Hasta la Raíz", artist: "Natalia Lafourcade", pauseAfter: false},
+  {search: "Bonito, Bonito Thiago Navarro Music cafecito", title: "Bonito, Bonito ☕", artist: "Thiago Navarro Music", pauseAfter: true}, // ⏸️ PAUSA para el pastel
+  {id: "3k53XKibh5c", title: "🎂 ¡Feliz Cumpleaños Antonella! 🎂", artist: "¡Todos juntos!", pauseAfter: false, isBirthday: true}
 ];
 
 let player, idx=0, playing=true;
