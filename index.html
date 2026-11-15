@@ -105,7 +105,7 @@ const TV_STATIONS = [
     "https://redirector.rudo.video/hls-video/567ffde3fa319fadf3419efda25619456231dfea/latina/latina.smil/playlist.m3u8",
     "https://cablered.iptvperu.tv:1936/cablered/latina_new/playlist.m3u8",
     "http://190.93.224.42/LATINA/index.m3u8"]},
-  {name:"AMÉRICA TV", icon:"📺", tv:true, urls:[
+  {name:"AMÉRICA TV", icon:"📺", tv:true, fallbackPage:"https://www.americatv.com.pe/", urls:[
     "https://live-bd1.tv360.bitel.com.pe/manifest/america/master_clean_source.m3u8",
     "http://45.171.108.253:8888/AMERICA/index.m3u8",
     "http://190.93.224.42/AMERICA-TV/index.m3u8",
@@ -235,7 +235,14 @@ function tryTV(){
     if(seq!==tvSeq) return;
     teardown();
     if(i>=urls.length){
-      if(++cycles>=MAX_CYCLES){showBanner('Sin señal ahora mismo. ← Atrás para volver');return;}
+      if(++cycles>=MAX_CYCLES){
+        if(ch.fallbackPage){
+          showBanner('Sin señal. Abriendo la página oficial…');
+          setTimeout(()=>{ if(seq!==tvSeq)return; let w=null; try{w=window.open(ch.fallbackPage,'_blank','noopener');}catch(e){} if(!w)window.location.href=ch.fallbackPage; },2500);
+          return;
+        }
+        showBanner('Sin señal ahora mismo. ← Atrás para volver');return;
+      }
       i=0; showBanner('Reconectando… ('+cycles+'/'+(MAX_CYCLES-1)+')');
       tvTimer=setTimeout(()=>{if(seq===tvSeq)attempt();},PAUSE); return;
     }
