@@ -101,16 +101,31 @@ const STATIONS = [
 
 // ⚠️ Estos enlaces de TV pueden caerse (los canales cambian de servidor). Para TV siempre al día usa RPP TV / Famelack.
 const TV_STATIONS = [
-  {name:"RPP TV", icon:"📺", tv:true, urls:["https://redirector.rudo.video/hls-video/567ffde3fa319fadf3419efda25619456231dfea/rpptv/rpptv.smil/playlist.m3u8"]},
-  {name:"América TV", icon:"📺", tv:true, urls:["https://live-bd1.tv360.bitel.com.pe/manifest/america/master_clean_source.m3u8"]},
-  {name:"Latina", icon:"📺", tv:true, urls:["https://redirector.rudo.video/hls-video/567ffde3fa319fadf3419efda25619456231dfea/latina/latina.smil/playlist.m3u8", "https://redirector.rudo.video/hls-video/plus226/latina2/latina2.smil/playlist.m3u8"]},
-  {name:"ATV", icon:"📺", tv:true, urls:["https://d2b5h5wyivfnfl.cloudfront.net/live/25046411-8673-4dec-8ae8-5b41984f34e1/ts:abr.m3u8", "https://d19e55ehz2il4i.cloudfront.net/ts:abr.m3u8", "https://d2tr4gdfol9ja.cloudfront.net/atv/smil:atv.smil/playlist.m3u8"]},
-  {name:"Panamericana TV", icon:"📺", tv:true, urls:["https://cdnhd.iblups.com/hls/ptv2.m3u8", "https://cdnhd.iblups.com/hls/777b4d4cc0984575a7d14f6ee57dbcaf7.m3u8"]},
-  {name:"TV Perú", icon:"🇵🇪", tv:true, urls:["https://cdnh8.iblups.com/hls/R9WtilpKKB.m3u8", "https://cdnhd.iblups.com/hls/777b4d4cc0984575a7d14f6ee57dbcaf7.m3u8"]},
-  {name:"TV Perú Noticias", icon:"🇵🇪", tv:true, urls:["https://cdnh4.iblups.com/hls/RMuwrdk7M9.m3u8"]},
-  {name:"Global TV", icon:"📺", tv:true, urls:["https://live-evg7.tv360.bitel.com.pe/bitel/global_abr/playlist.m3u8", "https://cablered.iptvperu.tv:1936/cablered/global.stream/playlist.m3u8"]},
-  {name:"Exitosa TV", icon:"📰", tv:true, urls:["https://cu.onliv3.com/livevd1/user2.m3u8", "https://luna-4-video.mediaserver.digital/exitosatv_233b-4b49-a726-5a451262/index.m3u8"]},
-  {name:"Top Latino TV", icon:"🎶", tv:true, urls:["https://5cefcbf58ba2e.streamlock.net:443/tltvweb/tvweb.stream/playlist.m3u8"]}
+  {name:"LATINA", icon:"📺", tv:true, urls:[
+    "https://redirector.rudo.video/hls-video/567ffde3fa319fadf3419efda25619456231dfea/latina/latina.smil/playlist.m3u8",
+    "https://cablered.iptvperu.tv:1936/cablered/latina_new/playlist.m3u8",
+    "http://190.93.224.42/LATINA/index.m3u8"]},
+  {name:"AMÉRICA TV", icon:"📺", tv:true, urls:[
+    "https://live-bd1.tv360.bitel.com.pe/manifest/america/master_clean_source.m3u8",
+    "http://45.171.108.253:8888/AMERICA/index.m3u8",
+    "http://190.93.224.42/AMERICA-TV/index.m3u8",
+    "http://bantel-cdn1.iptvperu.tv:1935/btnscrtn/america.stream/playlist.m3u8",
+    "http://187.102.210.46/AMERICA/index.m3u8"]},
+  {name:"RPP TV", icon:"📺", tv:true, urls:[
+    "https://redirector.rudo.video/hls-video/567ffde3fa319fadf3419efda25619456231dfea/rpptv/rpptv.smil/playlist.m3u8"]},
+  {name:"TV PERÚ", icon:"🇵🇪", tv:true, urls:[
+    "https://cdnhd.iblups.com/hls/777b4d4cc0984575a7d14f6ee57dbcaf7.m3u8",
+    "https://cablered.iptvperu.tv:1936/cablered/tvperu_new/playlist.m3u8"]},
+  {name:"ATV", icon:"📺", tv:true, urls:[
+    "https://d2b5h5wyivfnfl.cloudfront.net/live/25046411-8673-4dec-8ae8-5b41984f34e1/ts:abr.m3u8",
+    "https://d19e55ehz2il4i.cloudfront.net/ts:abr.m3u8"]},
+  {name:"ATV+", icon:"📺", tv:true, urls:[
+    "https://d26l0c7cli5gzs.cloudfront.net/ts:abr.m3u8"]},
+  {name:"GLOBAL TV", icon:"📺", tv:true, urls:[
+    "https://live-evg7.tv360.bitel.com.pe/bitel/global_abr/playlist.m3u8",
+    "https://cablered.iptvperu.tv:1936/cablered/global.stream/playlist.m3u8"]},
+  {name:"LATINA NOTICIAS", icon:"📰", tv:true, urls:[
+    "https://redirector.rudo.video/hls-video/567ffde3fa319fadf3419efda25619456231dfea/latinanoticias/latinanoticias.smil/playlist.m3u8"]}
 ];
 const ALL = STATIONS.concat(TV_STATIONS);
 
@@ -206,24 +221,72 @@ function playTV(s){
   tryTV();
 }
 function tryTV(){
-  const urls=tvUrls(tvCur), seq=++tvSeq;
+  const seq=++tvSeq;
   if(hls){try{hls.destroy();}catch(e){} hls=null;}
   clearTimeout(tvTimer);
-  if(tvSrc>=urls.length){showBanner(urls.length?'Sin señal ahora mismo. ← Atrás para volver':'Esta señal solo funciona en la app instalada (no en https)');return;}
-  showBanner('Conectando… ('+(tvSrc+1)+'/'+urls.length+')');
-  const url=urls[tvSrc];
-  const fail=()=>{if(seq!==tvSeq)return;tvSrc++;tryTV();};
-  tvTimer=setTimeout(fail,15000);
-  vid.onplaying=()=>{if(seq!==tvSeq)return;clearTimeout(tvTimer);showBanner('En vivo');};
-  vid.onerror=fail;
-  if(NATIVE_HLS){vid.src=url;vid.play().catch(()=>{});}
-  else loadHls().then(()=>{
-    if(seq!==tvSeq)return;
-    if(!Hls.isSupported()){fail();return;}
-    hls=new Hls({maxBufferLength:20,manifestLoadingMaxRetry:1,levelLoadingMaxRetry:1,fragLoadingMaxRetry:2});
-    hls.on(Hls.Events.ERROR,(ev,d)=>{if(d.fatal)fail();});
-    hls.loadSource(url); hls.attachMedia(vid); vid.play().catch(()=>{});
-  }).catch(fail);
+  const ch=tvCur, memKey='tv_ok_'+ch.name;
+  let urls=tvUrls(ch).slice();
+  try{const good=localStorage.getItem(memKey); if(good&&urls.includes(good)) urls=[good].concat(urls.filter(u=>u!==good));}catch(e){}
+  if(!urls.length){showBanner('Esta señal solo funciona en la app instalada (no en https)');return;}
+  const START=10000, STALL=20000, MAX_CYCLES=6, PAUSE=3000;
+  let i=0, cycles=0, stallTimer=null, netRetries=0, mediaRecovers=0, started=false;
+  const teardown=()=>{if(hls){try{hls.destroy();}catch(e){} hls=null;} clearTimeout(tvTimer); clearTimeout(stallTimer); netRetries=0; mediaRecovers=0; started=false;};
+  const next=()=>{
+    if(seq!==tvSeq) return;
+    teardown();
+    if(i>=urls.length){
+      if(++cycles>=MAX_CYCLES){showBanner('Sin señal ahora mismo. ← Atrás para volver');return;}
+      i=0; showBanner('Reconectando… ('+cycles+'/'+(MAX_CYCLES-1)+')');
+      tvTimer=setTimeout(()=>{if(seq===tvSeq)attempt();},PAUSE); return;
+    }
+    attempt();
+  };
+  const attempt=()=>{
+    const url=urls[i++];
+    showBanner('Conectando… '+i+'/'+urls.length);
+    tvTimer=setTimeout(next,START);
+    const armStall=()=>{clearTimeout(stallTimer);stallTimer=setTimeout(()=>{if(seq===tvSeq){showBanner('Señal lenta, probando otra…');next();}},STALL);};
+    vid.onplaying=()=>{if(seq!==tvSeq)return;clearTimeout(tvTimer);clearTimeout(stallTimer);started=true;cycles=0;showBanner('En vivo');try{localStorage.setItem(memKey,url);}catch(e){}};
+    vid.onwaiting=()=>{if(seq===tvSeq&&started&&vid.readyState<3)armStall();};
+    vid.onstalled=vid.onwaiting;
+    vid.ontimeupdate=()=>{if(seq===tvSeq&&!vid.paused)clearTimeout(stallTimer);};
+    vid.onerror=()=>{if(!started)next();};
+    loadHls().then(()=>true,()=>false).then(ok=>{
+      if(seq!==tvSeq)return;
+      if(ok&&window.Hls&&Hls.isSupported()){
+        hls=new Hls({
+          lowLatencyMode:false,
+          maxBufferLength:30, maxMaxBufferLength:60, backBufferLength:20,
+          liveSyncDurationCount:5, liveMaxLatencyDurationCount:14,
+          maxBufferHole:0.6, nudgeMaxRetry:8,
+          startLevel:0, testBandwidth:false, startFragPrefetch:true, capLevelToPlayerSize:true,
+          abrEwmaDefaultEstimate:1000000, abrBandWidthFactor:0.8, abrBandWidthUpFactor:0.5,
+          manifestLoadingTimeOut:10000, manifestLoadingMaxRetry:1,
+          levelLoadingTimeOut:10000, levelLoadingMaxRetry:3, levelLoadingRetryDelay:1000,
+          fragLoadingTimeOut:15000, fragLoadingMaxRetry:4, fragLoadingRetryDelay:1000
+        });
+        hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+          try{const lv=hls.levels||[]; if(lv.length>1){let cap=0; lv.forEach((l,k)=>{if((l.height||0)<=480)cap=k;}); hls.autoLevelCapping=cap;}}catch(e){}
+        });
+        hls.on(Hls.Events.ERROR,(e,d)=>{
+          if(!d.fatal||!hls)return;
+          if(!started){next();return;}
+          if(d.type===Hls.ErrorTypes.NETWORK_ERROR&&netRetries<4){
+            netRetries++; showBanner('Reconectando señal…');
+            setTimeout(()=>{if(seq===tvSeq&&hls){try{hls.startLoad();}catch(x){}}},1200*netRetries); return;
+          }
+          if(d.type===Hls.ErrorTypes.MEDIA_ERROR&&mediaRecovers<3){
+            mediaRecovers++; try{if(mediaRecovers===2)hls.swapAudioCodec(); hls.recoverMediaError(); return;}catch(x){}
+          }
+          next();
+        });
+        hls.loadSource(url); hls.attachMedia(vid); vid.play().catch(()=>{});
+      } else if(vid.canPlayType('application/vnd.apple.mpegurl')){
+        vid.src=url; vid.play().catch(()=>{});
+      } else { next(); }
+    });
+  };
+  next();
 }
 function tvStep(d){ if(!tvCur)return; const n=TV_STATIONS.length, k=(tvIdx+d+n)%n; idx=STATIONS.length+k; focusCard(); playTV(TV_STATIONS[k]); }
 
