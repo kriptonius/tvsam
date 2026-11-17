@@ -1,248 +1,207 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrevista Odontológica Virtual con Voz</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .chat-container { width: 450px; max-width: 90%; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 650px; }
-        .chat-header { background: #007bff; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 1.1em; }
-        .voice-controls { background: #f8f9fa; padding: 10px; display: flex; justify-content: space-around; border-bottom: 1px solid #ddd; }
-        .voice-controls label { display: flex; align-items: center; gap: 5px; font-size: 0.9em; cursor: pointer; }
-        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 0.95em; line-height: 1.4; }
-        .bot-message { background: #e9ecef; color: #333; align-self: flex-start; border-bottom-left-radius: 2px; }
-        .user-message { background: #007bff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .chat-input { display: flex; padding: 15px; border-top: 1px solid #ddd; background: #fafafa; gap: 10px; }
-        .chat-input input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; font-size: 1em; }
-        .chat-input button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; }
-        .chat-input button:hover { background: #0056b3; }
-        .mic-button { background: #28a745 !important; width: 45px; height: 45px; border-radius: 50% !important; padding: 0 !important; display: flex; align-items: center; justify-content: center; font-size: 1.2em; }
-        .mic-button:hover { background: #218838 !important; }
-        .mic-button.recording { background: #dc3545 !important; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        .summary { background: #d4edda; color: #155724; padding: 15px; border-radius: 10px; margin-top: 10px; font-size: 0.9em; white-space: pre-wrap; }
-        .status { text-align: center; padding: 5px; font-size: 0.85em; color: #666; background: #fff3cd; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrevista al Cirujano Dentista</title>
+<style>
+  *{box-sizing:border-box}
+  body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#0b1120;margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;color:#1f2937}
+  .chat-container{width:520px;max-width:96%;background:#fff;border-radius:15px;box-shadow:0 10px 25px rgba(0,0,0,.4);overflow:hidden;display:flex;flex-direction:column;height:92vh;max-height:760px}
+  .chat-header{background:#0b6bcb;color:#fff;padding:14px 16px;font-weight:bold;font-size:1.05em;text-align:center;position:relative}
+  .chat-header a{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:.85em;font-weight:600}
+  .chat-header small{display:block;font-weight:400;font-size:.75em;opacity:.9;margin-top:2px}
+  .progress{height:5px;background:#dbe4f0}.progress div{height:100%;width:0;background:#22c55e;transition:width .3s}
+  .voice-controls{background:#f8f9fa;padding:8px 10px;display:flex;justify-content:space-around;border-bottom:1px solid #ddd;gap:6px;flex-wrap:wrap}
+  .voice-controls label{display:flex;align-items:center;gap:5px;font-size:.85em;cursor:pointer}
+  .voice-controls button{font-size:.8em;padding:5px 10px;border:1px solid #bbb;background:#fff;border-radius:14px;cursor:pointer}
+  .status{text-align:center;padding:5px;font-size:.85em;color:#666;background:#fff3cd}
+  .chat-messages{flex:1;padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+  .message{max-width:85%;padding:10px 14px;border-radius:15px;font-size:.95em;line-height:1.4;white-space:pre-wrap}
+  .bot-message{background:#e9ecef;color:#333;align-self:flex-start;border-bottom-left-radius:2px}
+  .user-message{background:#0b6bcb;color:#fff;align-self:flex-end;border-bottom-right-radius:2px}
+  .chat-input{display:flex;padding:12px;border-top:1px solid #ddd;background:#fafafa;gap:8px;align-items:flex-end}
+  .chat-input textarea{flex:1;padding:10px 12px;border:1px solid #ccc;border-radius:16px;outline:none;font-size:1em;font-family:inherit;resize:none;height:46px;max-height:120px}
+  .chat-input button{padding:10px 16px;background:#0b6bcb;color:#fff;border:none;border-radius:20px;cursor:pointer;font-weight:bold}
+  .mic-button{background:#28a745!important;width:46px;height:46px;border-radius:50%!important;padding:0!important;font-size:1.2em}
+  .mic-button.recording{background:#dc3545!important;animation:pulse 1.3s infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+  .summary{background:#d4edda;color:#155724;padding:14px;border-radius:10px;font-size:.88em;white-space:pre-wrap;line-height:1.45}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .actions button{padding:9px 14px;border:none;border-radius:16px;background:#0b6bcb;color:#fff;font-weight:bold;cursor:pointer}
+</style>
 </head>
 <body>
-
 <div class="chat-container">
-    <div class="chat-header"><a href="index.html" style="color:#fff;text-decoration:none;float:left">← Volver</a>🦷 Entrevista Odontológica con Voz</div>
-    <div class="voice-controls">
-        <label>
-            <input type="checkbox" id="enableSpeech" checked>
-            🔊 Voz del Bot
-        </label>
-        <label>
-            <input type="checkbox" id="enableMic" checked>
-            🎤 Micrófono Activo
-        </label>
-    </div>
-    <div class="status" id="status">Listo para comenzar</div>
-    <div class="chat-messages" id="chatMessages"></div>
-    <div class="chat-input">
-        <input type="text" id="userInput" placeholder="Escribe o habla tu respuesta..." onkeypress="handleKeyPress(event)">
-        <button class="mic-button" id="micButton" onclick="toggleRecording()" title="Presiona para hablar">🎤</button>
-        <button onclick="sendMessage()">Enviar</button>
-    </div>
+  <div class="chat-header"><a href="index.html">← Volver</a>🦷 Entrevista para YouTube<small>Cirujano Dentista Salvador Castillo Estrada</small></div>
+  <div class="progress"><div id="bar"></div></div>
+  <div class="voice-controls">
+    <label><input type="checkbox" id="enableSpeech" checked>🔊 Voz del entrevistador</label>
+    <button onclick="repeatQuestion()">🔁 Repetir</button>
+    <button onclick="skipQuestion()">⏭️ Saltar</button>
+    <button onclick="restart()">↺ Reiniciar</button>
+  </div>
+  <div class="status" id="status">Preparando entrevista…</div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-input">
+    <textarea id="userInput" placeholder="Habla con el micrófono o escribe tu respuesta…" onkeydown="handleKey(event)"></textarea>
+    <button class="mic-button" id="micButton" onclick="toggleRecording()" title="Hablar / terminar">🎤</button>
+    <button onclick="sendMessage()">Enviar</button>
+  </div>
 </div>
 
 <script>
-    const questions = [
-        "Hola, soy tu asistente de entrevista odontológica. Para comenzar, ¿cuál es tu nombre completo?",
-        "Mucho gusto, {nombre}. ¿Cuál es el motivo principal de tu consulta hoy? Por ejemplo: dolor, limpieza, revisión, ortodoncia",
-        "¿Experimentas algún dolor, sensibilidad o inflamación en este momento? Por favor, describe brevemente.",
-        "¿Tienes algún antecedente médico importante? Como alergias, medicamentos actuales, diabetes o hipertensión",
-        "¿Cuántas veces al día te cepillas los dientes y usas hilo dental?",
-        "¿Cuándo fue tu última visita al odontólogo y qué tratamiento te realizaron?",
-        "¿Tienes algún hábito como fumar, consumir alcohol o rechinar los dientes?"
-    ];
-    
-    let currentStep = 0;
-    let answers = {};
-    let userName = "";
-    let recognition = null;
-    let isRecording = false;
-    let synth = window.speechSynthesis;
+const DOCTOR = "Cirujano Dentista Salvador Castillo Estrada";
+const questions = [
+  "Bienvenido, Doctor Salvador Castillo Estrada. Para quienes nos ven en YouTube, cuéntenos: ¿quién es usted, dónde atiende y a qué se dedica?",
+  "¿Por qué decidió estudiar Odontología? ¿Qué lo motivó?",
+  "¿Cuántos años lleva ejerciendo y cómo es atender pacientes en el VRAEM?",
+  "¿Cuáles son los problemas dentales más comunes que ve en su consultorio?",
+  "¿Cuál es el error que más cometen las personas al cuidar sus dientes?",
+  "¿Cada cuánto tiempo deberíamos hacernos una limpieza o profilaxis dental, y por qué es importante?",
+  "Doctor, díganos un mito sobre los dientes que le gustaría desmentir hoy.",
+  "¿Cómo debemos cepillarnos correctamente? Explíquelo paso a paso para que los televidentes puedan aplicarlo.",
+  "¿Qué consejo le daría a quienes le tienen miedo al dentista?",
+  "¿Qué tratamiento le ha dado más satisfacción como profesional, y por qué?",
+  "¿Qué servicios ofrece y cómo pueden contactarlo o agendar una cita las personas que nos ven?",
+  "Para cerrar, doctor: ¿cuál es su mensaje final para los espectadores?"
+];
+const labels = ["Presentación","Por qué odontología","Experiencia en el VRAEM","Problemas más comunes","Error más frecuente","Limpieza / profilaxis","Mito a desmentir","Cepillado correcto","Miedo al dentista","Tratamiento más satisfactorio","Servicios y contacto","Mensaje final"];
 
-    // Configurar reconocimiento de voz
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognition = new SpeechRecognition();
-        recognition.lang = 'es-ES';
-        recognition.continuous = false;
-        recognition.interimResults = false;
+let step = 0, answers = [], recognition = null, isRecording = false, finalText = "";
+const synth = window.speechSynthesis;
+const $ = id => document.getElementById(id);
 
-        recognition.onresult = function(event) {
-            const transcript = event.results[0][0].transcript;
-            document.getElementById('userInput').value = transcript;
-            stopRecording();
-            sendMessage();
-        };
-
-        recognition.onerror = function(event) {
-            console.error('Error de reconocimiento:', event.error);
-            updateStatus('Error de reconocimiento. Intenta de nuevo.');
-            stopRecording();
-        };
-
-        recognition.onend = function() {
-            if (isRecording) {
-                stopRecording();
-            }
-        };
-    } else {
-        document.getElementById('micButton').disabled = true;
-        document.getElementById('micButton').title = 'Reconocimiento de voz no soportado';
-        document.getElementById('enableMic').checked = false;
+// ----- Voz: reconocimiento (continuo, para respuestas largas) -----
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SR) {
+  recognition = new SR();
+  recognition.lang = 'es-PE';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.onresult = e => {
+    let interim = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) finalText += t + " "; else interim += t;
     }
+    $('userInput').value = (finalText + interim).trim();
+  };
+  recognition.onerror = e => { if (e.error !== 'no-speech') status('Micrófono: ' + e.error + '. Puedes escribir tu respuesta.'); };
+  recognition.onend = () => { if (isRecording) { try { recognition.start(); } catch (e) {} } };
+} else {
+  $('micButton').disabled = true;
+  $('micButton').title = 'Este navegador no tiene reconocimiento de voz. Escribe tu respuesta.';
+}
 
-    function speak(text) {
-        if (!document.getElementById('enableSpeech').checked) return;
-        
-        // Cancelar cualquier habla anterior
-        synth.cancel();
-        
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'es-ES';
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
-        
-        // Intentar usar una voz en español
-        const voices = synth.getVoices();
-        const spanishVoice = voices.find(v => v.lang.startsWith('es'));
-        if (spanishVoice) {
-            utterance.voice = spanishVoice;
-        }
-        
-        synth.speak(utterance);
-    }
+function status(t){ $('status').textContent = t; }
 
-    function toggleRecording() {
-        if (!recognition) {
-            alert('Tu navegador no soporta reconocimiento de voz');
-            return;
-        }
+function speak(text){
+  if (!$('enableSpeech').checked || !synth) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-PE'; u.rate = .95;
+  const v = synth.getVoices().find(v => v.lang.startsWith('es'));
+  if (v) u.voice = v;
+  synth.speak(u);
+}
 
-        if (isRecording) {
-            stopRecording();
-        } else {
-            startRecording();
-        }
-    }
+function toggleRecording(){
+  if (!recognition) return;
+  if (isRecording) { stopRecording(true); } else { startRecording(); }
+}
+function startRecording(){
+  if (synth) synth.cancel();
+  finalText = $('userInput').value ? $('userInput').value + " " : "";
+  isRecording = true;
+  $('micButton').classList.add('recording'); $('micButton').textContent = '⏹️';
+  status('🎤 Escuchando… habla con calma. Toca ⏹️ cuando termines.');
+  try { recognition.start(); } catch (e) {}
+}
+function stopRecording(autoSend){
+  isRecording = false;
+  $('micButton').classList.remove('recording'); $('micButton').textContent = '🎤';
+  try { recognition.stop(); } catch (e) {}
+  status('Revisa tu respuesta y toca Enviar (o edítala).');
+}
 
-    function startRecording() {
-        if (!document.getElementById('enableMic').checked) {
-            alert('Activa el micrófono en los controles superiores');
-            return;
-        }
+// ----- Chat -----
+function addMessage(text, who){
+  const d = document.createElement('div');
+  d.className = 'message ' + (who === 'bot' ? 'bot-message' : 'user-message');
+  d.textContent = text;
+  $('chatMessages').appendChild(d);
+  $('chatMessages').scrollTop = $('chatMessages').scrollHeight;
+}
+function updateBar(){ $('bar').style.width = Math.round(step / questions.length * 100) + '%'; }
 
-        const micButton = document.getElementById('micButton');
-        micButton.classList.add('recording');
-        micButton.textContent = '⏹️';
-        isRecording = true;
-        updateStatus('🎤 Escuchando... Habla ahora');
-        
-        try {
-            recognition.start();
-        } catch (e) {
-            console.error('Error al iniciar reconocimiento:', e);
-            stopRecording();
-        }
-    }
+function ask(){
+  updateBar();
+  if (step >= questions.length) { showSummary(); return; }
+  const q = questions[step];
+  status('Pregunta ' + (step + 1) + ' de ' + questions.length);
+  setTimeout(() => { addMessage(q, 'bot'); speak(q); }, 400);
+}
+function repeatQuestion(){ if (step < questions.length) { speak(questions[step]); } }
+function skipQuestion(){
+  if (step >= questions.length) return;
+  if (isRecording) stopRecording();
+  answers[step] = "(pregunta saltada)";
+  addMessage('(saltada)', 'user'); $('userInput').value = ''; step++; ask();
+}
+function sendMessage(){
+  if (step >= questions.length) return;
+  if (isRecording) stopRecording();
+  const text = $('userInput').value.trim();
+  if (!text) { status('Escribe o dicta tu respuesta primero.'); return; }
+  addMessage(text, 'user');
+  answers[step] = text;
+  $('userInput').value = ''; finalText = '';
+  step++; ask();
+}
+function handleKey(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
 
-    function stopRecording() {
-        const micButton = document.getElementById('micButton');
-        micButton.classList.remove('recording');
-        micButton.textContent = '🎤';
-        isRecording = false;
-        updateStatus('Listo para continuar');
-        
-        try {
-            recognition.stop();
-        } catch (e) {
-            console.error('Error al detener reconocimiento:', e);
-        }
-    }
+// ----- Resumen para YouTube -----
+function buildOutput(){
+  let t = "ENTREVISTA AL " + DOCTOR.toUpperCase() + "\n\n";
+  questions.forEach((q, i) => {
+    t += (i + 1) + ". " + labels[i] + "\nP: " + q + "\nR: " + (answers[i] || "—") + "\n\n";
+  });
+  t += "—— PARA YOUTUBE ——\n";
+  t += "TÍTULO SUGERIDO:\nEntrevista al Cirujano Dentista Salvador Castillo Estrada | Consejos para cuidar tus dientes\n\n";
+  t += "DESCRIPCIÓN SUGERIDA:\nEn esta entrevista conversamos con el " + DOCTOR + " sobre el cuidado de los dientes, los errores más comunes, mitos y consejos prácticos.\n\n";
+  t += "En este video:\n";
+  labels.forEach((l, i) => { t += "00:00 " + l + "\n"; });
+  t += "\n(Cambia 00:00 por el minuto real de cada tema al editar el video.)\n";
+  t += "\n#odontología #saludbucal #dentista #VRAEM #consejosdentales";
+  return t;
+}
+function showSummary(){
+  const out = buildOutput();
+  setTimeout(() => {
+    addMessage('Gracias, doctor. Con esto tienes tu entrevista lista. Abajo está el texto para copiar.', 'bot');
+    speak('Gracias, doctor. La entrevista ha terminado. Abajo tienes el texto para copiar.');
+    const box = document.createElement('div'); box.className = 'summary'; box.textContent = out;
+    const acts = document.createElement('div'); acts.className = 'actions';
+    const b1 = document.createElement('button'); b1.textContent = '📋 Copiar todo';
+    b1.onclick = () => { navigator.clipboard.writeText(out).then(() => { b1.textContent = '✓ Copiado'; }, () => { b1.textContent = 'No se pudo copiar'; }); };
+    const b2 = document.createElement('button'); b2.textContent = '↺ Nueva entrevista'; b2.onclick = restart;
+    acts.append(b1, b2);
+    $('chatMessages').append(box, acts);
+    $('chatMessages').scrollTop = $('chatMessages').scrollHeight;
+    status('Entrevista finalizada');
+  }, 400);
+}
+function restart(){
+  if (isRecording) stopRecording();
+  if (synth) synth.cancel();
+  step = 0; answers = []; finalText = '';
+  $('chatMessages').innerHTML = ''; $('userInput').value = '';
+  ask();
+}
 
-    function updateStatus(text) {
-        document.getElementById('status').textContent = text;
-    }
-
-    function addMessage(text, sender) {
-        const chatMessages = document.getElementById('chatMessages');
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${sender === 'bot' ? 'bot-message' : 'user-message'}`;
-        msgDiv.textContent = text;
-        chatMessages.appendChild(msgDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    function askQuestion() {
-        if (currentStep < questions.length) {
-            let q = questions[currentStep].replace("{nombre}", userName);
-            setTimeout(() => {
-                addMessage(q, 'bot');
-                speak(q);
-            }, 500);
-        } else {
-            showSummary();
-        }
-    }
-
-    function sendMessage() {
-        const input = document.getElementById('userInput');
-        const text = input.value.trim();
-        if (!text) return;
-
-        addMessage(text, 'user');
-        input.value = '';
-
-        // Guardar respuesta
-        if (currentStep === 0) userName = text;
-        answers[`Pregunta ${currentStep + 1}`] = text;
-
-        currentStep++;
-        askQuestion();
-    }
-
-    function showSummary() {
-        let summaryText = "✅ ENTREVISTA FINALIZADA - RESUMEN\n\n";
-        summaryText += `Paciente: ${userName}\n`;
-        summaryText += `Motivo: ${answers['Pregunta 2']}\n`;
-        summaryText += `Síntomas: ${answers['Pregunta 3']}\n`;
-        summaryText += `Antecedentes: ${answers['Pregunta 4']}\n`;
-        summaryText += `Higiene: ${answers['Pregunta 5']}\n`;
-        summaryText += `Última visita: ${answers['Pregunta 6']}\n`;
-        summaryText += `Hábitos: ${answers['Pregunta 7']}\n\n`;
-        summaryText += "Este resumen puede ser copiado y enviado a tu odontólogo.";
-
-        setTimeout(() => {
-            const chatMessages = document.getElementById('chatMessages');
-            const summaryDiv = document.createElement('div');
-            summaryDiv.className = 'summary';
-            summaryDiv.textContent = summaryText;
-            chatMessages.appendChild(summaryDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            speak('Entrevista finalizada. Aquí está el resumen de tus respuestas.');
-        }, 500);
-    }
-
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') sendMessage();
-    }
-
-    // Cargar voces
-    if (synth.onvoiceschanged !== undefined) {
-        synth.onvoiceschanged = () => synth.getVoices();
-    }
-
-    // Iniciar
-    setTimeout(() => askQuestion(), 1000);
+if (synth && synth.onvoiceschanged !== undefined) synth.onvoiceschanged = () => synth.getVoices();
+setTimeout(ask, 800);
 </script>
-
 </body>
 </html>
